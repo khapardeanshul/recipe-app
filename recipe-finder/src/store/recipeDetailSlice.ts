@@ -17,7 +17,7 @@ const initialState: RecipeDetailState = {
 export const fetchRecipeDetail = createAsyncThunk(
     'recipeDetail/fetchRecipeDetail',
     async (id: string) => {
-        const response = await fetch(`http://localhost:8000/recipes/${id}/`);
+        const response = await fetch(`http://localhost:8000/api/recipes/${id}/`);
         const data: RecipeDetailResponse = await response.json();
         return data.meals?.[0] || null;
     }

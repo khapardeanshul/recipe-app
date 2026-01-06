@@ -21,7 +21,7 @@ const initialState: RecipesState = {
 export const fetchRecipesByIngredient = createAsyncThunk(
     'recipes/fetchRecipesByIngredient',
     async (ingredient: string) => {
-        const response = await fetch(`http://localhost:8000/recipes/?ingredient=${ingredient}`);
+        const response = await fetch(`http://localhost:8000/api/recipes/?ingredient=${ingredient}`);
         const data: RecipesResponse = await response.json();
         return { meals: data.meals, ingredient };
     }
