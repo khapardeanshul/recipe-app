@@ -8,8 +8,10 @@ import {
     selectRecipeDetailError,
 
 } from '../store/recipeDetailSlice';
+import Navbar from '../components/shared/Navbar';
 import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
+import './RecipeDetails.css'
 
 
 const RecipeDetails = () => {
@@ -28,26 +30,42 @@ const RecipeDetails = () => {
     }, [id, dispatch]);
 
     if (loading) {
-        return <Spinner />;
+        return (
+          <>
+            <Navbar />;
+            <Spinner />;
+          </>
+        )
     };
 
     if (error) {
         return (
-            <div>
-                <p>Error: {error}</p>
+           <>
+            <Navbar />;
+            <div className='main-container'>
+              <button onClick={() => navigate(-1)}>Back to Recipes</button>
+              <p>
+                Error: {error}
+              </p>
+
             </div>
-            // maybe a back button
+           </>
+          
         );
     };
 
     if (!recipe) {
         return(
-            <div className='container'>
+          <>
+            <Navbar />;
+            <div className='main-container'>
+                <button onClick={() => navigate(-1)}>Back to Recipes</button>
                 <p>
                     Recipe not found
                 </p>
             </div>
-            // maybe a back button 
+          </>  
+          
         );
     };
 
@@ -62,48 +80,76 @@ const RecipeDetails = () => {
     }
   
      return (
-   <div className="container">
-      <Button variant="primary" onClick={() => navigate(-1)}>Back to Recipes</Button>
+      <>
+        <Navbar />
+        <div className='main-container'>
+            {/* <button onClick={() => navigate(-1)}>Back to Recipes</button> */}
+            <Button variant='primary' onClick={() => navigate(-1)}>
+                    Back to Recipes
+                </Button>
 
-     <div className="recipe-header">
-       <img src={recipe.strMealThumb} alt={recipe.strMeal} />
-       <div className="recipe-info">
-         <h1>{recipe.strMeal}</h1>
-         <p>Category: {recipe.strCategory}</p>
-         <p>Area: {recipe.strArea}</p>
-         {recipe.strYoutube && (
-           <a href={recipe.strYoutube} target="\_blank" rel="noopener noreferrer">
-            Watch on YouTube
-           </a>
-         )}
-       </div>
-    </div>
+            <div className='recipe-detail-container'>
+              <div className='recipe-detail-header'>
+                  <div className='recipe-detail-img-container'>
+                      <img src={recipe.strMealThumb} alt={recipe.strMeal} className='recipe-detail-image' />
+                  </div>
 
-     <div className="recipe-section">
-       <h2>Cooking Instructions</h2>
-       <p>{recipe.strInstructions}</p>
-     </div>
+                  <div className='recipe-detail-info'>
+                      <h1 className='recipe-detail-title'>{recipe.strMeal}</h1>
 
-     <div className="recipe-section">
-      <h2>Ingredients Required</h2>
-       <table>
-         <thead>
-           <tr>
-             <th>Measure</th>
-             <th>Ingredient</th>
-           </tr>
-         </thead>
-         <tbody>
-           {ingredients.map((item, index) => (
-             <tr key={index}>
-               <td>{item.measure}</td>
-               <td>{item.ingredient}</td>
-             </tr>
-           ))}
-         </tbody>
-       </table>
-    </div>
-   </div>
+                      <div className='recipe-meta'>
+                        <div className='recipe-meta-item'>
+                            <span className='meta-label'>Category:</span>
+                            <span className='meta-value'>{recipe.strCategory}</span>
+                        </div>
+                        <div className='recipe-meta-item'>
+                            <span className='meta-label'>Area:</span>
+                            <span className='meta-value'>{recipe.strArea}</span>
+                        </div>
+                      </div>
+
+                      {recipe.strYoutube && (
+                        <a href={recipe.strYoutube} 
+                           target='_blank'
+                           rel="noopener noreferrer"
+                           className="youtube-button">Watch Recipe on YouTube</a>
+                      )}
+                  </div>
+              </div>
+
+              <div className="recipe-section">
+                <h2 className="section-title">Cooking Instructions</h2>
+                <div className="instructions-box">
+                  <p className="instructions-text">{recipe.strInstructions}</p>
+                </div>
+              </div>    
+
+              <div className="recipe-section">
+            <h2 className="section-title">Ingredients Required</h2>
+            <div className="ingredients-table-container">
+              <table className="ingredients-table">
+                <thead>
+                  <tr>
+                    <th>Measure</th>
+                    <th>Ingredient</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {ingredients.map((item, index) => (
+                    <tr key={index}>
+                      <td>{item.measure}</td>
+                      <td>{item.ingredient}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+            </div>
+        </div>
+      </>
 
   );
 

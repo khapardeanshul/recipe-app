@@ -66,6 +66,14 @@ export interface MealDetail {
     [key: string]: string | null | undefined;
 }
 
+// Category interface (from /api/categories/ response)
+export interface Category {
+    idCategory: string;
+    strCategory: string;
+    strCategoryThumb: string;
+    strCategoryDescription: string;
+}
+
 export interface IngredientResponse {
     meals: Ingredient[];
 }
@@ -76,4 +84,8 @@ export interface RecipesResponse {
 
 export interface RecipeDetailResponse {
     meals: MealDetail[] | null;
+}
+
+export interface CategoriesResponse {
+    categories: Category[] ;
 }

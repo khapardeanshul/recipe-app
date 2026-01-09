@@ -9,9 +9,11 @@ import {
     setSearchTerm,
     clearRecipes,
 } from '../store/recipesSlice';
+import Navbar from '../components/shared/Navbar';
 import SearchInput from '../components/shared/SearchInput';
 import Spinner from '../components/shared/Spinner';
 import Button from '../components/shared/Button';
+import './RecipeList.css'
 
 const RecipeList = () => {
 
@@ -38,51 +40,101 @@ const RecipeList = () => {
   };
 
     if (loading) {
-        return <Spinner />;
+        return (
+            <>
+            <Navbar/>
+            <Spinner />
+            </>
+        );
     }
 
     if (error) {
         return (
-            <div>
+            <>
+            <Navbar/>
+            <div className='main-container'>
+                <button onClick={() => navigate('/')}>
+                    Back to Ingredients
+                </button>
+                
                 <p>
                     Error: {error}
                 </p>
+            
             </div>
+            </>
         );
     }
 
      return (
-        <div className='container'>
-            <Button variant='primary' onClick={() => navigate(-1)}>
-                Back
-            </Button>
+        <>
+        <Navbar/>
+        <div className='main-container'>
+            <div className='recipe-list-header'>
+                <Button variant='primary' onClick={() => navigate(-1)}>
+                    Back to Ingredients
+                </Button>
 
-            <h1>Recipes with {ingredient}</h1>
-
-            <SearchInput 
+                <h1 className='page-title'>Recipes with {ingredient}</h1>
+            </div>
+            <div className='search-box-container'>
+                <SearchInput
                 value={search}
                 onChange={handleSearch}
                 placeholder='Search Recipes...'
-            />  
-
-            <div className='recipe-grid'>
-                {recipes.map(recipe => (
-                    <div className='recipe-card'
-                // /recipe/${recipe.idMeal}
-                        key={recipe.idMeal}
-                        onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
-                
-                >
-                    <img src={recipe.strMealThumb} alt={recipe.strMeal} />
-                    <h3>{recipe.strMeal}</h3>
-                </div>
-                ))}
-              
+            /> 
             </div>
+
+            {recipes.length === 0 ? (
+                <p>
+                    No recipes found
+                </p>
+            ) : (
+                <div className='recipe-grid'>
+                    {recipes.map(recipe => (
+                        <div 
+                            key={recipe.idMeal}
+                            className='recipe-card'
+                            onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
+                        >
+                            <div className='recipe-image-container'>
+                                <img src={recipe.strMealThumb} alt={recipe.strMeal} 
+                                  className='recipe-image'
+                                />
+                            </div>
+                            <div className='recipe-name'>
+                                {recipe.strMeal}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+            )}
+            
+
+           
 
 
         </div>
+
+       </> 
      );
 };
 
 export default RecipeList;
+
+
+//  <div className='recipe-grid'>
+//                 {recipes.map(recipe => (
+//                     <div 
+//                         key={recipe.idMeal}
+//                         className='recipe-card'
+//                         onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
+                
+//                 >
+//                     <img src={recipe.strMealThumb} alt={recipe.strMeal} />
+//                     <h3>{recipe.strMeal}</h3>
+//                 </div>
+//                 ))}
+              
+//             </div>

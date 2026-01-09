@@ -1,0 +1,63 @@
+.main-container {
+    background-color: #92859f;
+    padding: 40px 20px;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 36px;
+  margin-bottom: 40px;
+
+}
+
+.search-box-container {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.ingredients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin: 0 auto 40px;
+  max-width: 1400px;
+  
+}
+
+.ingredient-card {
+  padding: 20px 40px;
+  border-radius: 12px;
+  align-items: center;
+  font-size: 18px;
+  font-weight: 600;
+  cursor: pointer;
+  color: #000;
+  transition: transform 0.2s;
+  box-shadow: 0 4px 6px rgba(9, 101, 150, 0.3);
+}
+
+.ingredient-card:hover {
+  /* transition: translate(-50px); */
+  box-shadow: 0 8px 16px rgba(41, 117, 153, 0.4);
+}
+
+/* Mobile responsive grid */
+@media (max-width: 767px) {
+  .ingredients-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page-title {
+    font-size: 28px;
+  }
+}
+
+/* Tablet responsive grid */
+@media (min-width: 768px) and (max-width:1024px) {
+  .ingredients-grid{
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
