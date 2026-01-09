@@ -62,7 +62,7 @@ const Categories = () => {
                         <div 
                             key={category.idCategory}
                             className='category-card'
-                            // onClick={() => navigate(`/category/${category.strCategory}`)}
+                            onClick={() => navigate(`/category/${category.strCategory}`)}
                         >
                             <div className='category-image-container'>
                                 <img 
@@ -70,9 +70,9 @@ const Categories = () => {
                                 alt={category.strCategory}
                                 className='category-image' />
 
-                                {/* <div className='category-overlay'>
+                                <div className='category-overlay'>
                                     <span className='view-category'>View Recipes</span>
-                                </div> */}
+                                </div>
                             </div>
 
                             <div className='category-info'>

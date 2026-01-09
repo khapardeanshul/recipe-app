@@ -78,10 +78,9 @@
     line-height: 1.4;
     text-align: center;
     margin: 0;
-    display: -webkit-box;
     overflow: hidden;
     text-overflow: ellipsis;
-    min-height: 80px;
+    min-height: 8px;
 }
 
 /* No Results Message */

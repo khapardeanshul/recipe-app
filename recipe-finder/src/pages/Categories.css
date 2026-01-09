@@ -64,7 +64,7 @@
     transform: scale(1.1);
 }
 
-/* .category-overlay {
+.category-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -89,7 +89,7 @@
     font-size: 16px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-} */
+}
 
 .category-info {
     padding: 20px;
@@ -107,10 +107,6 @@
 @media (max-width: 767px) {
     .page-title {
         font-size: 32px;
-    }
-
-    .page-subtitle {
-        font-size: 16px;
     }
 
     .categories-grid {
