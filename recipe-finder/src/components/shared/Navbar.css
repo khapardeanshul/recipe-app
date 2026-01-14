@@ -1,18 +1,18 @@
 .navbar {
   background: linear-gradient(135deg, #4A90E2 0%, #357ABD 100%);
-  padding: 20px 40px;
+  padding: 18px 24px;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  justify-content: space-between;
+  position: relative;
 }
 
+/* Branding */
 .navbar-brand {
-  font-size: 28px;
-  font-weight: 700;
-  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  color: white;
   cursor: pointer;
-  letter-spacing: 0.5px;
 }
 
 .navbar-brand-accent {
@@ -20,24 +20,80 @@
   font-weight: 400;
 }
 
+/* Desktop nav */
 .navbar-links {
   display: flex;
-  gap: 15px;
+  gap: 12px;
 }
 
 .nav-link {
-  background: rgba(255, 255, 255, 0.1);
-  border: 2px solid transparent;
-  color: #fff;
-  padding: 10px 24px;
-  font-size: 16px;
-  font-weight: 500;
-  cursor: pointer;
+  background: rgba(255,255,255,0.15);
+  border: none;
+  padding: 10px 16px;
   border-radius: 8px;
-  transition: all 0.3s ease;
+  color: white;
+  cursor: pointer;
 }
 
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: #50E3C2;
+.nav-link-active {
+  background: rgba(255,255,255,0.35);
+}
+
+/* hamburger */
+.custom-menu-toggle {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.menu-bar {
+  height: 3px;
+  background: white;
+  border-radius: 2px;
+}
+
+.bar-1 { width: 22px; }
+.bar-2 { width: 16px; margin-left: 6px; }
+.bar-3 { width: 20px; }
+
+/* Mobile menu */
+.mobile-menu {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  height: 100vh;
+  background: #357ABD;
+  display: flex;
+  flex-direction: column;
+  width: 180px;
+  border-radius: 0 0 8px 8px;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.mobile-menu button {
+  padding: 12px;
+  background: none;
+  border: none;
+  color: white;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mobile-menu button:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .navbar-links {
+    display: none;
+  }
+
+  .custom-menu-toggle {
+    display: flex;
+  }
 }

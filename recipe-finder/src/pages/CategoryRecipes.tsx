@@ -21,6 +21,7 @@ const CategoryRecipes = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
     const [ search, setSearch ] = useState('')
+    const [inputError, setInputError] = useState('')
 
     const recipes = useAppSelector(selectFilteredRecipes);
     const loading = useAppSelector(selectRecipesLoading);
@@ -34,10 +35,20 @@ const CategoryRecipes = () => {
 
     }, [category, dispatch]);
 
+    const validation = (val: string) => {
+        if(!val.trim())
+            return "Please add recipe name"
+
+        return ""
+    }
+
 
     const handleSearch = (value: string) => {
         setSearch(value);
         dispatch(setSearchTerm(value));
+
+        const error = validation(value)
+        setInputError(error)
     };
 
     if (loading) {
@@ -93,6 +104,7 @@ const CategoryRecipes = () => {
                             onChange={handleSearch}
                             placeholder='Search recipes...'
                         />
+                        {inputError && <p>{inputError}</p>}
                     </div>
 
                     {recipes.length === 0 ? (

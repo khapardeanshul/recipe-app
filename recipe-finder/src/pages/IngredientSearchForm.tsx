@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../store/hooks';
 import {
@@ -23,6 +23,7 @@ import './IngredientSearchForm.css'
 const IngredientSearchForm = () => {
     const dispatch = useAppDispatch();
     const navigate = useNavigate();
+    const [ inputError, setInputError ] = useState<string>("")
 
     const ingredients = useAppSelector(selectPaginatedIngredients);
     const loading = useAppSelector(selectIngredientsLoading);
@@ -34,6 +35,20 @@ const IngredientSearchForm = () => {
     useEffect(() => {
         dispatch(fetchIngredients());
     }, [dispatch]);
+
+    const validation = (val: string) => {
+        if(!val.trim())
+            return "Please enter an ingredient.";
+        return ""
+    }
+
+    const handleSearch = (value: string) => {
+        dispatch(setSearchTerm(value))
+        
+        const error = validation(value)
+        setInputError(error)
+    }
+
 
     if (loading) {
         return (
@@ -52,59 +67,8 @@ const IngredientSearchForm = () => {
         );
     }
 
-
-    // const grouped: Record<string, Ingredient[]> = {}
-    // ingredients.forEach(ingredient => {
-    //     const letter = ingredient.strIngredient[0].toUpperCase();
-    //     if (!grouped[letter]) {
-    //         grouped[letter] =[];
-    //     }
-    //     grouped[letter].push(ingredient);
-    // });
-    
-    // const letters = Object.keys(grouped).sort();
     
     return (
-        // <div className='container'>
-        //     <h1>Recipe Search</h1>
-
-        //     <SearchInput
-        //         value = {searchTerm}
-        //         onChange={(value) => dispatch(setSearchTerm(value))}
-        //         placeholder='Search Ingredients...'
-        //     />
-
-        
-        //     {ingredients.length === 0 ? (
-        //         <p>No ingrerdients found</p>
-        //     ) : (
-        //         <>
-        //             <div className='ingredients-list'>
-        //                 {letters.map(letter => (
-        //                     <div key={letter}>
-        //                         <h3>{letter}</h3>
-        //                         {grouped[letter].map(ingredient => (
-        //                             <div className='ingredient-item'
-        //                             key={ingredient.idIngredient}
-        //                             onClick={() => navigate(`/recipes/${ingredient.strIngredient}`)}
-        //                             >
-        //                                 {ingredient.strIngredient}
-        //                             </div>
-        //                         ))}
-        //                     </div>
-        //                 ))}
-        //             </div>
-
-        //             <Pagination
-        //                 currentPage={currentPage}
-        //                 totalPages={totalPages}
-        //                 onPageChange={(page) => dispatch(setCurrentPage(page))}
-        //             />
-        //         </>
-        //     )}
-
-            
-        // </div>
 
         <>
             <Navbar/>
@@ -115,9 +79,11 @@ const IngredientSearchForm = () => {
                 <div className='search-box-container'>
                     <SearchInput
                        value={searchTerm}
-                       onChange={(value) => dispatch(setSearchTerm(value))}
+                       
+                       onChange={handleSearch}
                        placeholder='Enter ingredient name'
                     />
+                    {inputError && <p>{inputError}</p>}
                 </div>
 
                 {ingredients.length === 0 ? (
