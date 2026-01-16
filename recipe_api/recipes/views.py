@@ -10,25 +10,20 @@ import requests
 class IngredientListView(APIView):
     """
     GEt /api/ingredients/
-    Fetches ingredients from TheMealDB API
+    Returns all ingredients from the Database
     """
     
     def get(self, request):
+        ingredients = Ingredient.objects.all().order_by('name')
+        serializer = IngredientSerializer(ingredients, many=True)
+        return Response({'meals': serializer.data})
 
-        try:
-            # Fetch from TheMealDB
-            response = requests.get('https://www.themealdb.com/api/json/v1/1/list.php?i=list')
-            data = response.json()
-            return Response(data)
-        except Exception as e:
-            return Response({'meals': None}, status=500)
-
-
+     
 
 class RecipesByIngredientView(APIView):
     """
     GET /api/recipes/?ingredient={ingredient_name}
-    Fetches recipes by ingredient from TheMealDB API
+    Returns Recipes from the Database 
     """
     
     def get(self, request):
@@ -36,17 +31,15 @@ class RecipesByIngredientView(APIView):
         ingredient_name = request.query_params.get('ingredient', None)
         
         if not ingredient_name:
-            return Response({'meals': None})
+            recipes = Recipe.objects.all()
+        else:
+            recipes = Recipe.objects.filter(recipe_ingredients__ingredient__name__iexact=ingredient_name).distinct()    
         
-        try:
-            # Fetch from TheMealDB
-            url = f'https://www.themealdb.com/api/json/v1/1/filter.php?i={ingredient_name}'
-            response = requests.get(url)
-            data = response.json()
-            return Response(data)
-        except Exception as e:
-            return Response({'meals': None}, status=500)
-            
+        if not recipes.exists():
+            return Response({'meals': None})
+       
+        serializer = RecipeListSerializer(recipes, many=True)
+        return Response({'meals': serializer.data})            
 
 
 class RecipeDetailView(APIView):
@@ -58,47 +51,51 @@ class RecipeDetailView(APIView):
     def get(self, request, recipe_id):
         
         try:
-            # Fetch from TheMealDB
-            url = f'https://www.themealdb.com/api/json/v1/1/lookup.php?i={recipe_id}'
-            response = requests.get(url)
-            data = response.json()
-            return Response(data)
-        except Exception as e:
-            return Response({'meals': None}, status=500)
+            recipe = Recipe.objects.get(id=recipe_id)
+            serializer = RecipeDetailSerializer(recipe)
+            return Response({'meals': [serializer.data]})
+        except Recipe.DoesNotExist:
+            return Response({'meals': None})
         
 
 class CategoriesListView(APIView):
     """
     Get/api/categories/
-    Fetch all categories from TheMealDB
+    Returns all categories from Database
     """
     
     def get(self, request):
+        categories = Category.objects.all().order_by('name')
         
-        try:
-            # Fetch from TheMealDB
-            url = f'https://www.themealdb.com/api/json/v1/1/categories.php'
-            response = requests.get(url)
-            data = response.json()
-            return Response(data)
-        except Exception as e:
-            return Response({'categories': None}, status=500)
+        categories_data = []
+        for item in categories:
+            categories_data.append({
+                'strCategory': item.name, 
+                'strCategoryThumb': item.thumbnail,
+            })
+        
+        return Response({'categories': categories_data})
         
 
 class RecipesByCategoryView(APIView):
     """
     GET /api/recipes/category/{category_name}/
-    Fetch recipes by category from TheMEalDB API
+    Returns all Recipes by categories from the Database
     """        
     def get(self, request, category_name):
         try:
-            # Fetch from TheMealDB
-            url = f'https://www.themealdb.com/api/json/v1/1/filter.php?c={category_name}' 
-            response = requests.get(url)
-            data = response.json()
-            return Response(data)
-        except Exception as e:
-            return Response({'meals': None}, status=500)
+            category = Category.objects.get(name__iexact=category_name)
+            recipes = Recipe.objects.filter(category=category)
+            
+            if not recipes.exists():
+                return Response({'meals': None})
+            
+            serializer = RecipeListSerializer(recipes, many=True)
+            return Response({'meals': serializer.data})
+            
+        except Category.DoesNotExist:
+            return Response({'meals': None})
+
         
            
     

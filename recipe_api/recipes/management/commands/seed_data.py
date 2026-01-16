@@ -1,167 +1,145 @@
 import requests
-from recipes.models import Ingredient, Recipe, RecipeIngredient, Category
+import time
 from django.core.management.base import BaseCommand
+from recipes.models import Ingredient, Category, Recipe, RecipeIngredient
+
 
 class Command(BaseCommand):
-    help = 'seed the database with real data from TheMealDB API'
-    
+    help = "Seed database from TheMealDB API"
+
     def handle(self, *args, **kwargs):
-        
-        self.stdout.write('Clearing existing data...')
-        
-        # Clear existing data
+        print("\n This will delete all existing data.")
+        if input("Continue? (yes/no): ") != "yes":
+            print("Cancelled.")
+            return
+
+        self.clear_data()
+        self.seed_ingredients()
+        self.seed_categories()
+        self.seed_recipes()
+
+        print("\n Seeding completed!")
+        print(f"Ingredients: {Ingredient.objects.count()}")
+        print(f"Categories: {Category.objects.count()}")
+        print(f"Recipes: {Recipe.objects.count()}")
+
+
+    def clear_data(self):
         RecipeIngredient.objects.all().delete()
         Recipe.objects.all().delete()
         Ingredient.objects.all().delete()
         Category.objects.all().delete()
+        print(" Database cleared")
 
-        
-        self.stdout.write('Creating ingredients...')
-        # Create ingredients
-        ingredients_data = ['Chicken', 'Soy Sauce', 'Honey', 'Garlic', 'Ginger',
-                            'Salmon', 'Lemon', 'Butter', 'Pasta', 'Tomato Sauce',
-                            'Beef', 'Onion', 'Carrot', 'Potato', 'Rice',
-                            'Olive oil', 'Salt', 'Pepper', 'Parmesan Cheese', 'Basil']
-        
-        ingredients = {}
-        for name in ingredients_data:
-            ing = Ingredient.objects.create(
-                name=name,
-                description=f"{name} is a common cooking ingredient.")
+    def seed_ingredients(self):
+        print("\n Fetching ingredients...")
+        url = "https://www.themealdb.com/api/json/v1/1/list.php?i=list"
+        data = requests.get(url).json()
+
+        for item in data["meals"]:
+            Ingredient.objects.create(
+                name=item["strIngredient"],
+                description=item.get("strDescription") or "",
+                ingredient_type=item.get("strType") or "",
+            )
             
-            ingredients[name] = ing
-            
-        self.stdout.write('Creating Categories...')
-            
-        # Create Categories
-        chicken_cat = Category.objects.create(name='Chicken')
-        seafood_cat = Category.objects.create(name='Seafood')
-        pasta_cat = Category.objects.create(name='Pasta')
-        beef_cat = Category.objects.create(name='Beef')
-        
-        
-        self.stdout.write('Creating Recipes...')
-        # Create Recipes
-        recipe1 = Recipe.objects.create(
-            name = 'Teriyaki Chicken Casserole',
-            category = chicken_cat,
-            area = 'Japanese',
-            instructions = 'Preheat oven to 350F.\nMix soy sauce and honey in a bowl.\nMarinate chicken for 30 minutes.\nPlace chicken in baking dish.\nBake for 45 minutes until golden brown.\nServe hot with rice.',
-            thumbnail = 'https://www.themealdb.com/images/media/meals/wvpsxx1468256321.jpg',
-            youtube_link = 'https://www.youtube.com/watch?v=4aZr5hZXP_s'
-            
-        )
-        RecipeIngredient.objects.create(recipe=recipe1, ingredient=ingredients['Chicken'], measure='500g', order=1)
-        RecipeIngredient.objects.create(recipe=recipe1, ingredient=ingredients['Soy Sauce'], measure='3 tbsp', order=2)
-        RecipeIngredient.objects.create(recipe=recipe1, ingredient=ingredients['Honey'], measure='2 tbsp', order=3)
-        RecipeIngredient.objects.create(recipe=recipe1, ingredient=ingredients['Garlic'], measure='2 cloves', order=4)
-        RecipeIngredient.objects.create(recipe=recipe1, ingredient=ingredients['Ginger'], measure='1 tbsp', order=5)
-           
-       
-        recipe2 = Recipe.objects.create(
-            name='Honey Lemon Chicken',
-            category=chicken_cat,
-            area='American',
-            instructions='Season chicken with salt and pepper.\nHeat oil in a large pan over medium heat.\nPan fry chicken until golden on both sides.\nAdd honey and lemon juice to the pan.\nSimmer for 10 minutes until sauce thickens.\nGarnish with fresh herbs and serve.',
-            thumbnail='https://www.themealdb.com/images/media/meals/k420tj1585565244.jpg',
-            youtube_link='https://www.youtube.com/watch?v=example2'
-        )
-        RecipeIngredient.objects.create(recipe=recipe2, ingredient=ingredients['Chicken'], measure='4 pieces', order=1)
-        RecipeIngredient.objects.create(recipe=recipe2, ingredient=ingredients['Honey'], measure='4 tbsp', order=2)
-        RecipeIngredient.objects.create(recipe=recipe2, ingredient=ingredients['Lemon'], measure='2 pieces', order=3)
-        RecipeIngredient.objects.create(recipe=recipe2, ingredient=ingredients['Olive oil'], measure='2 tbsp', order=4)
+            time.sleep(0.2)
 
-        
-        recipe3 = Recipe.objects.create(
-            name='Grilled Salmon with Lemon Butter',
-            category=seafood_cat,
-            area='Mediterranean',
-            instructions='Season salmon fillets with salt and pepper.\nPreheat grill to medium-high heat.\nGrill salmon for 4 minutes on each side.\nMelt butter in a small pan and add lemon juice.\nDrizzle lemon butter sauce over grilled salmon.\nServe immediately with vegetables.',
-            thumbnail='https://www.themealdb.com/images/media/meals/1548772327.jpg',
-            youtube_link='https://www.youtube.com/watch?v=example3'
-        )
-        RecipeIngredient.objects.create(recipe=recipe3, ingredient=ingredients['Salmon'], measure='2 fillets', order=1)
-        RecipeIngredient.objects.create(recipe=recipe3, ingredient=ingredients['Lemon'], measure='1 piece', order=2)
-        RecipeIngredient.objects.create(recipe=recipe3, ingredient=ingredients['Butter'], measure='3 tbsp', order=3)
-        RecipeIngredient.objects.create(recipe=recipe3, ingredient=ingredients['Salt'], measure='1 tsp', order=4)
-        RecipeIngredient.objects.create(recipe=recipe3, ingredient=ingredients['Pepper'], measure='1/2 tsp', order=5)
+        print(f" {Ingredient.objects.count()} ingredients saved")
 
-       
-        recipe4 = Recipe.objects.create(
-            name='Classic Tomato Pasta',
-            category=pasta_cat,
-            area='Italian',
-            instructions='Boil pasta in salted water according to package instructions.\nHeat olive oil in a pan and sauté garlic until fragrant.\nAdd tomato sauce and simmer for 10 minutes.\nDrain pasta and add to the sauce.\nToss well to coat pasta with sauce.\nTop with parmesan cheese and fresh basil.',
-            thumbnail='https://www.themealdb.com/images/media/meals/ustsqw1468250014.jpg',
-            youtube_link='https://www.youtube.com/watch?v=example4'
-        )
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Pasta'], measure='400g', order=1)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Tomato Sauce'], measure='2 cups', order=2)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Garlic'], measure='3 cloves', order=3)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Onion'], measure='1 piece', order=4)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Olive oil'], measure='2 tbsp', order=5)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Parmesan Cheese'], measure='50g', order=6)
-        RecipeIngredient.objects.create(recipe=recipe4, ingredient=ingredients['Basil'], measure='5 leaves', order=7)
+    def seed_categories(self):
+        print("\n Fetching categories...")
+        url = "https://www.themealdb.com/api/json/v1/1/categories.php"
+        data = requests.get(url).json()
 
-        
-        recipe5 = Recipe.objects.create(
-            name='Hearty Beef Stew',
-            category=beef_cat,
-            area='American',
-            instructions='Cut beef into cubes and season with salt and pepper.\nBrown beef in a large pot with oil.\nAdd onions, carrots, and potatoes.\nPour in beef broth and bring to boil.\nReduce heat and simmer for 2 hours until tender.\nServe hot with crusty bread.',
-            thumbnail='https://www.themealdb.com/images/media/meals/uvuyxu1503067369.jpg',
-            youtube_link='https://www.youtube.com/watch?v=example5'
-        )
-        RecipeIngredient.objects.create(recipe=recipe5, ingredient=ingredients['Beef'], measure='800g', order=1)
-        RecipeIngredient.objects.create(recipe=recipe5, ingredient=ingredients['Onion'], measure='2 pieces', order=2)
-        RecipeIngredient.objects.create(recipe=recipe5, ingredient=ingredients['Carrot'], measure='3 pieces', order=3)
-        RecipeIngredient.objects.create(recipe=recipe5, ingredient=ingredients['Potato'], measure='4 pieces', order=4)
-        RecipeIngredient.objects.create(recipe=recipe5, ingredient=ingredients['Olive oil'], measure='3 tbsp', order=5)
+        for item in data["categories"]:
+            Category.objects.create(
+                name=item["strCategory"],
+                thumbnail=item.get("strCategoryThumb"),
+                )
 
-        self.stdout.write(self.style.SUCCESS('Successfully seeded database with 5 recipes!'))
-        self.stdout.write(self.style.SUCCESS(f'Total ingredients: {Ingredient.objects.count()}'))
-        self.stdout.write(self.style.SUCCESS(f'Total categories: {Category.objects.count()}'))
-        self.stdout.write(self.style.SUCCESS(f'Total recipes: {Recipe.objects.count()}'))
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    # def handle(self, *args, **Kwargs):
-        
-        
-    #     # Fetch and Create ingredients
-    #     self.stdout.write('Fetching ingredients data from TheMealDB...')
-    #     self.fetch_ingredients()
-        
-    #     # Fetch and create recipes for multiple ingredients
-    #     self.stdout.write('Fetching recipes data from TheMealDB...')
-    #     sample_ingredients = ['Chicken', 'Beef', 'Salmon', 'pasta', 'Potato']
-        
-    #     for ingredient in sample_ingredients:
-    #         self.stdout.writef(f'Fetching recipes for {ingredient_name}...')
-    #         self.fetch_recipes_by_ingredient(ingredient_name)
+            time.sleep(0.2)
+        print(f" {Category.objects.count()} categories saved")
 
-    #         self.stdout.write(self.style.SUCCESS('Successfully seeded database from TheMealDB!'))
-    #         self.stdout.write(self.style.SUCCESS(f'Total ingredients: {Ingredient.objects.count()}'))
-    #         self.stdout.write(self.style.SUCCESS(f'Total categories: {Category.objects.count()}'))
-    #         self.stdout.write(self.style.SUCCESS(f'Total recipes: {Recipe.objects.count()}'))
-            
-    #         def fetch_ingredients(self):
-                
+    def seed_recipes(self):
+        print("\n Fetching recipes...")
+
+        for category in Category.objects.all():
+            print(f"  → {category.name}")
+            url = f"https://www.themealdb.com/api/json/v1/1/filter.php?c={category.name}"
+            data = requests.get(url).json()
+
+            if not data.get("meals"):
+                continue
+
+            for meal in data["meals"]:
+                meal_id = meal["idMeal"]
+                detail_url = f"https://www.themealdb.com/api/json/v1/1/lookup.php?i={meal_id}"
+                detail_data = requests.get(detail_url).json()
+
+                if detail_data.get("meals"):
+                    self.create_recipe(detail_data["meals"][0], category)
+
+                time.sleep(0.2)
+        
+
+    def create_recipe(self, meal, category):
+        name = (meal.get("strMeal") or "").strip()
+        instructions = (meal.get("strInstructions") or "").strip()
+        youtube_link = (meal.get("strYoutube") or "").strip()
+        area = (meal.get("strArea") or "").strip()
+
+        if not name:
+            self.stdout.write(self.style.WARNING("Skipping: empty name"))
+            return
+
+        if not instructions:
+            self.stdout.write(self.style.WARNING(f"Skipping '{name}': empty instructions"))
+            return
+
+        if Recipe.objects.filter(name=name).exists():
+            self.stdout.write(self.style.WARNING(f"Skipping '{name}': already exists"))
+            return
+
+        if len(name) > 255:
+            self.stdout.write(self.style.WARNING(f"Skipping '{name}': name too long ({len(name)})"))
+            return
+
+        if len(youtube_link) > 500:
+            self.stdout.write(self.style.WARNING(f"Skipping '{name}': youtube link too long ({len(youtube_link)})"))
+            return
+
+        if len(area) > 100:
+            self.stdout.write(self.style.WARNING(f"Skipping '{name}': area too long ({len(area)})"))
+            return
+
+        self.stdout.write(self.style.SUCCESS(f"Saving recipe: {name}"))
+
+        recipe = Recipe.objects.create(
+        name=name,
+        category=category,
+        area=area,
+        instructions=instructions,
+        thumbnail=meal.get("strMealThumb") or "",
+        youtube_link=youtube_link,
+    )
+
+        for i in range(1, 21):
+            ingredient_name = (meal.get(f"strIngredient{i}") or "").strip()
+            measure = (meal.get(f"strMeasure{i}") or "").strip()
+
+            if not ingredient_name:
+                continue
+
+            ingredient, _ = Ingredient.objects.get_or_create(
+                name__iexact=ingredient_name,
+                defaults={"name": ingredient_name, "description": "", "ingredient_type": ""},
+            )
+
+            RecipeIngredient.objects.create(
+                recipe=recipe,
+                ingredient=ingredient,
+                measure=measure,
+                order=i,
+            )
+

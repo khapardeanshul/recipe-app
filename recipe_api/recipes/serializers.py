@@ -11,6 +11,11 @@ class IngredientSerializer(serializers.ModelSerializer):
         model = Ingredient
         fields = ['idIngredient', 'strIngredient', 'strDescription', 'strType']
         
+class CategorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Category
+        fields = ['id', 'name', 'thumbnail']        
+        
 
 class RecipeListSerializer(serializers.ModelSerializer):
     idMeal = serializers.IntegerField(source='id', read_only=True)
