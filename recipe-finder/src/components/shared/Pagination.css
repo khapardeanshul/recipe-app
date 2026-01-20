@@ -6,29 +6,6 @@
   margin: 40px 0;
 }
 
-.pagination-button {
-  padding: 12px 24px;
-  background-color: #4A90E2;
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 16px;
-  transition: all 0.3s ease;
-}
-
-.pagination-button:hover:not(:disabled) {
-  background-color: #357ABD;
-  transform: translateY(-2px);
-}
-
-.pagination-button:disabled {
-  background-color: #BDC3C7;
-  cursor: not-allowed;
-  transform: none;
-}
-
 .pagination-info {
   font-weight: 600;
   color: #2C3E50;

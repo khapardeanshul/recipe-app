@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import { Category, CategoriesResponse } from "../types/meal.types";
 import { RootState } from "./store";
+// import axios from "axios";
 
 interface CategoriesState {
     list: Category[];
@@ -17,7 +18,9 @@ const initialState: CategoriesState = {
 export const fetchCategories = createAsyncThunk(
     'categories/fetchCategories',
     async () => {
-        const response = await fetch('http://localhost:8000/api/categories/');
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+
+        const response = await fetch(`${API_BASE_URL}/categories/`);
         const data: CategoriesResponse = await response.json();
         return data.categories;
     }

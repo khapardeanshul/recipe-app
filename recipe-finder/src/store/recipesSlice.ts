@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { MealSummary, RecipesResponse, Category } from '../types/meal.types';
+import { MealSummary, RecipesResponse } from '../types/meal.types';
 import { RootState } from "./store";
 
 interface RecipesState {
@@ -23,7 +23,9 @@ const initialState: RecipesState = {
 export const fetchRecipesByIngredient = createAsyncThunk(
     'recipes/fetchRecipesByIngredient',
     async (ingredient: string) => {
-        const response = await fetch(`http://localhost:8000/api/recipes/?ingredient=${ingredient}`);
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        // const response = await axios.get(`${API_BASE_URL}/recipes/?ingredient=${ingredient}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/?ingredient=${ingredient}`);
         const data: RecipesResponse = await response.json();
         return { meals: data.meals, ingredient };
     }
@@ -32,7 +34,9 @@ export const fetchRecipesByIngredient = createAsyncThunk(
 export const fetchRecipesByCategory = createAsyncThunk(
     'recipes/fetchByCategory',
     async (category: string) => {
-        const response = await fetch(`http://localhost:8000/api/recipes/category/${category}`);
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        // const response = await axios.get(`${API_BASE_URL}/recipes/category/${category}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/category/${category}`);
         const data: RecipesResponse = await response.json();
         return { meals: data.meals, category };
     }
@@ -60,6 +64,7 @@ const recipesSlice = createSlice({
         builder.addCase(fetchRecipesByIngredient.pending, (state) => {
             state.loading = true;
             state.error = null;
+            state.searchTerm = '';
         });
 
         // Handle Ingredient Fulfilled state
@@ -81,6 +86,7 @@ const recipesSlice = createSlice({
         builder.addCase(fetchRecipesByCategory.pending, (state) =>{
             state.loading = true;
             state.error = null;
+            // state.searchTerm = '';
         });
 
         // Handle Category Fulfilled state

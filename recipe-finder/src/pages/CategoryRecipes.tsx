@@ -11,7 +11,6 @@ import {
 } from '../store/recipesSlice';
 import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
-import Navbar from '../components/shared/Navbar';
 import SearchInput from '../components/shared/SearchInput';
 import './RecipeList.css';
 
@@ -54,7 +53,6 @@ const CategoryRecipes = () => {
     if (loading) {
         return (
             <>
-                <Navbar />;
                 <Spinner />;
             </>
         )
@@ -63,7 +61,6 @@ const CategoryRecipes = () => {
     if (error) {
         return (
             <>
-                <Navbar />
                 <div className='main-container'>
                     <div className='content-wrapper'>
                         <Button 
@@ -83,7 +80,6 @@ const CategoryRecipes = () => {
 
     return (
         <>
-            <Navbar />
             <div className='main-container'>
                     <Button 
                     variant='primary'

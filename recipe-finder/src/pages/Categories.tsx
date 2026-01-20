@@ -7,7 +7,6 @@ import {
     selectCategoriesLoading,
     selectCategoriesError,
 } from '../store/categoriesSlice';
-import Navbar from '../components/shared/Navbar';
 import Spinner from '../components/shared/Spinner';
 import './Categories.css';
 
@@ -29,7 +28,6 @@ const Categories = () => {
     if (loading) {
         return (
             <>
-                <Navbar />;
                 <Spinner />;
             </>
         );
@@ -38,7 +36,6 @@ const Categories = () => {
     if (error) {
         return (
             <>
-            <Navbar />
             <div className='main-container'>
                 <p>
                     Error: {error}
@@ -51,7 +48,6 @@ const Categories = () => {
 
     return (
         <>
-            <Navbar />
             <div className='main-container'>
                 <h1 className='page-title'>
                     Categories

@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { FiMenu } from 'react-icons/fi';
+import Button from './Button';
 import './Navbar.css';
 
 const Navbar: React.FC = () => {
@@ -11,44 +13,60 @@ const Navbar: React.FC = () => {
 
   return (
     <nav className="navbar">
-      <div className="navbar-left">
+      {/* Left: Brand */}
         <div className="navbar-brand" onClick={() => navigate('/')}>
           Recipe<span className="navbar-brand-accent">Finder</span>
         </div>
-      </div>
 
-      {/* Desktop buttons */}
+      {/* Desktop navigation */}
       <div className="navbar-links">
-        <button
-          className={`nav-link ${isActive('/') ? 'nav-link-active' : ''}`}
+        <Button 
+          variant={isActive('/') ? 'primary': 'secondary'}
           onClick={() => navigate('/')}
         >
           Home
-        </button>
-        <button
-          className={`nav-link ${isActive('/categories') ? 'nav-link-active' : ''}`}
+        </Button>
+
+        <Button 
+          variant={isActive('/categories') ? 'primary' : 'secondary'}
           onClick={() => navigate('/categories')}
         >
           Categories
-        </button>
+        </Button>
       </div>
 
       {/* Mobile hamburger */}
-      <button
-        className="custom-menu-toggle"
-        onClick={() => setMenuOpen(!menuOpen)}
-        aria-label="Toggle menu"
-      >
-        <span className="menu-bar bar-1" />
-        <span className="menu-bar bar-2" />
-        <span className="menu-bar bar-3" />
-      </button>
+      <div className='navbar-hamburger'>
+        <Button
+          variant='secondary'
+          onClick={() => setMenuOpen(prev => !prev)}
+        >
+          {FiMenu({size:22})}
+        </Button>
+      </div>
 
       {/* Mobile dropdown */}
       {menuOpen && (
-        <div className="mobile-menu">
-          <button onClick={() => { navigate('/'); setMenuOpen(false); }}>Home</button>
-          <button onClick={() => { navigate('/categories'); setMenuOpen(false); }}>Categories</button>
+        <div className='mobile-menu'>
+          <Button 
+            variant='secondary'
+            onClick={() => {
+              navigate('/');
+              setMenuOpen(false);
+            }}
+          >
+            Home
+          </Button>
+
+          <Button 
+            variant='secondary'
+            onClick={() => {
+              navigate('/categories');
+              setMenuOpen(false);
+            }}
+          >
+            Categories
+          </Button>
         </div>
       )}
     </nav>

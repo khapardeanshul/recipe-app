@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { MealDetail, RecipeDetailResponse } from '../types/meal.types';
 import {RootState} from './store';
+// import axios from 'axios';
 
 interface RecipeDetailState {
     data: MealDetail | null;
@@ -17,7 +18,9 @@ const initialState: RecipeDetailState = {
 export const fetchRecipeDetail = createAsyncThunk(
     'recipeDetail/fetchRecipeDetail',
     async (id: string) => {
-        const response = await fetch(`http://localhost:8000/api/recipes/${id}/`);
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+        // const response = await axios.get(`${API_BASE_URL}/recipes/${id}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/${id}/`);
         const data: RecipeDetailResponse = await response.json();
         return data.meals?.[0] || null;
     }

@@ -9,7 +9,6 @@ import {
     setSearchTerm,
     clearRecipes,
 } from '../store/recipesSlice';
-import Navbar from '../components/shared/Navbar';
 import SearchInput from '../components/shared/SearchInput';
 import Spinner from '../components/shared/Spinner';
 import Button from '../components/shared/Button';
@@ -53,7 +52,6 @@ const RecipeList = () => {
     if (loading) {
         return (
             <>
-            <Navbar/>
             <Spinner />
             </>
         );
@@ -62,11 +60,10 @@ const RecipeList = () => {
     if (error) {
         return (
             <>
-            <Navbar/>
             <div className='main-container'>
-                <button onClick={() => navigate('/')}>
+                <Button variant='secondary' onClick={() => navigate('/')}>
                     Back to Ingredients
-                </button>
+                </Button>
                 
                 <p>
                     Error: {error}
@@ -79,7 +76,6 @@ const RecipeList = () => {
 
      return (
         <>
-        <Navbar/>
         <div className='main-container'>
             <div className='recipe-list-header'>
                 <Button variant='primary' onClick={() => navigate(-1)}>
@@ -134,19 +130,3 @@ const RecipeList = () => {
 };
 
 export default RecipeList;
-
-
-//  <div className='recipe-grid'>
-//                 {recipes.map(recipe => (
-//                     <div 
-//                         key={recipe.idMeal}
-//                         className='recipe-card'
-//                         onClick={() => navigate(`/recipe/${recipe.idMeal}`)}
-                
-//                 >
-//                     <img src={recipe.strMealThumb} alt={recipe.strMeal} />
-//                     <h3>{recipe.strMeal}</h3>
-//                 </div>
-//                 ))}
-              
-//             </div>

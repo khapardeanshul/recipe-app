@@ -12,7 +12,6 @@ import {
     selectIngredientsCurrentPage,
     selectTotalPages,
 } from '../store/ingredientsSlice';
-import Navbar from '../components/shared/Navbar';
 import SearchInput from '../components/shared/SearchInput';
 import Pagination from '../components/shared/Pagination';
 import Spinner from '../components/shared/Spinner';
@@ -53,7 +52,6 @@ const IngredientSearchForm = () => {
     if (loading) {
         return (
         <>
-        <Navbar />
         <Spinner />
         </>
         );  
@@ -71,7 +69,6 @@ const IngredientSearchForm = () => {
     return (
 
         <>
-            <Navbar/>
             <div className='main-container'>
                 <h1 className='page-title'>
                     Ingredient Search

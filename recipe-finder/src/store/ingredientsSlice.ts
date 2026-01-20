@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { Ingredient, IngredientResponse } from '../types/meal.types'; 
 import { RootState } from './store';
+// import axios from 'axios';
 
 
 interface IngredientsState {
@@ -23,7 +24,8 @@ const initialState: IngredientsState = {
 export const fetchIngredients = createAsyncThunk(
     'ingredients/fetchIngredients',
     async () => {
-        const response = await fetch('http://127.0.0.1:8000/api/ingredients/');
+        const API_BASE_URL = process.env.REACT_APP_API_BASE_URL
+        const response = await fetch(`${API_BASE_URL}/ingredients/`);
         const data: IngredientResponse = await response.json();
         return data.meals;
     }

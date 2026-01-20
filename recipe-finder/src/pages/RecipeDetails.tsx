@@ -8,10 +8,10 @@ import {
     selectRecipeDetailError,
 
 } from '../store/recipeDetailSlice';
-import Navbar from '../components/shared/Navbar';
 import Button from '../components/shared/Button';
 import Spinner from '../components/shared/Spinner';
 import './RecipeDetails.css'
+import { extractIngredients } from '../utils/recipeUtils';
 
 
 const RecipeDetails = () => {
@@ -32,7 +32,6 @@ const RecipeDetails = () => {
     if (loading) {
         return (
           <>
-            <Navbar />;
             <Spinner />;
           </>
         )
@@ -41,9 +40,10 @@ const RecipeDetails = () => {
     if (error) {
         return (
            <>
-            <Navbar />;
             <div className='main-container'>
-              <button onClick={() => navigate(-1)}>Back to Recipes</button>
+              <Button variant='secondary' onClick={() => navigate(-1)}>
+                  Back to Recipes
+              </Button>
               <p>
                 Error: {error}
               </p>
@@ -57,9 +57,10 @@ const RecipeDetails = () => {
     if (!recipe) {
         return(
           <>
-            <Navbar />;
             <div className='main-container'>
-                <button onClick={() => navigate(-1)}>Back to Recipes</button>
+              <Button variant='secondary' onClick={() => navigate(-1)}>
+                  Back to Recipes
+              </Button>
                 <p>
                     Recipe not found
                 </p>
@@ -70,23 +71,14 @@ const RecipeDetails = () => {
     };
 
 
-    const ingredients = [];
-    for (let i = 1; i <= 20; i++) {
-        const ingredient = recipe[`strIngredient${i}`];
-        const measure = recipe[`strMeasure${i}`];
-        if (ingredient && ingredient.trim()) {
-            ingredients.push({ ingredient, measure });
-        }
-    }
+    const ingredients = extractIngredients(recipe);
   
      return (
       <>
-        <Navbar />
         <div className='main-container'>
-            {/* <button onClick={() => navigate(-1)}>Back to Recipes</button> */}
             <Button variant='primary' onClick={() => navigate(-1)}>
                     Back to Recipes
-                </Button>
+            </Button>
 
             <div className='recipe-detail-container'>
               <div className='recipe-detail-header'>

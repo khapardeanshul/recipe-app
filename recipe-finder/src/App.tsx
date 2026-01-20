@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import MainLayout from './layouts/MainLayout';
 import  IngredientSearchForm  from './pages/IngredientSearchForm';
 import RecipeList from './pages/RecipeList';
 import RecipeDetails from './pages/RecipeDetails';
@@ -9,15 +10,17 @@ import './App.css';
 
 function App() {
   return (
-   <BrowserRouter>
+   <Router>
     <Routes>
-      <Route path="/" element={<IngredientSearchForm/>} />
-      <Route path="/recipes/:ingredient" element={<RecipeList/>}/>
-      <Route path="/recipe/:id" element={<RecipeDetails/>}/>
-      <Route path="/categories" element={<Categories/>}/>
-      <Route path="/category/:category" element={<CategoryRecipes/>}/>
+      <Route element={<MainLayout />}>
+        <Route path="/" element={<IngredientSearchForm/>} />
+        <Route path="/recipes/:ingredient" element={<RecipeList/>}/>
+        <Route path="/recipe/:id" element={<RecipeDetails/>}/>
+        <Route path="/categories" element={<Categories/>}/>
+        <Route path="/category/:category" element={<CategoryRecipes/>}/>
+      </Route>
     </Routes>
-   </BrowserRouter>
+   </Router>
   );
 }
 
