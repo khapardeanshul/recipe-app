@@ -12,9 +12,12 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ['idIngredient', 'strIngredient', 'strDescription', 'strType']
         
 class CategorySerializer(serializers.ModelSerializer):
+    idCategory = serializers.IntegerField(source='id', read_only=True)
+    strCategory = serializers.CharField(source='name')
+    strCategoryThumb = serializers.URLField(source='thumbnail')
     class Meta:
         model = Category
-        fields = ['id', 'name', 'thumbnail']        
+        fields = ['idCategory', 'strCategory', 'strCategoryThumb']        
         
 
 class RecipeListSerializer(serializers.ModelSerializer):

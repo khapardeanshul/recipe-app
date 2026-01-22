@@ -29,10 +29,18 @@ const CategoryRecipes = () => {
 
     useEffect(() => {
         if (category) {
-            dispatch(fetchRecipesByCategory(category));
+            const delayDebounceFn = setTimeout(() => {
+                dispatch(fetchRecipesByCategory({ category, searchTerm: search }));
+            }, 500)
+            return () => clearTimeout(delayDebounceFn);
         }
+    }, [ category, search, dispatch ]);
 
-    }, [category, dispatch]);
+    useEffect(() => {
+        return () => {
+            dispatch(clearRecipes())
+        };
+    }, [dispatch]);
 
     const validation = (val: string) => {
         if(!val.trim())
@@ -50,13 +58,13 @@ const CategoryRecipes = () => {
         setInputError(error)
     };
 
-    if (loading) {
-        return (
-            <>
-                <Spinner />;
-            </>
-        )
-    }
+    // if (loading && recipes.length === 0) {
+    //     return (
+    //         <>
+    //             <Spinner />;
+    //         </>
+    //     )
+    // }
 
     if (error) {
         return (
@@ -102,11 +110,15 @@ const CategoryRecipes = () => {
                         />
                         {inputError && <p>{inputError}</p>}
                     </div>
-
-                    {recipes.length === 0 ? (
-                <p>
-                    No recipes found
-                </p>
+                
+                {loading ? (
+                    <div>
+                        <Spinner/>
+                    </div>
+                ) : (
+                    <>
+                {recipes.length === 0 ? (
+                   search === '' ? <Spinner/> : <p>No recipes found</p>
             ) : (
                 <div className='recipe-grid'>
                     {recipes.map(recipe => (
@@ -128,6 +140,10 @@ const CategoryRecipes = () => {
                 </div>
 
             )}
+          </>
+        )}
+
+
                     
                 
             </div>

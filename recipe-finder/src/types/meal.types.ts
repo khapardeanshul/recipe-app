@@ -75,11 +75,17 @@ export interface Category {
 }
 
 export interface IngredientResponse {
+    message: string;
     meals: Ingredient[];
+    total_pages: number;
+    total_count: number;
 }
 
 export interface RecipesResponse {
     meals: MealSummary[] | null;
+    total: number;
+    page: number;
+    page_size: number;
 }
 
 export interface RecipeDetailResponse {

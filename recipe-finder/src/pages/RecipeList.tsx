@@ -30,9 +30,18 @@ const RecipeList = () => {
 
     useEffect(() => {
         if (ingredient) {
-        dispatch(fetchRecipesByIngredient(ingredient));
+            const delayDebounceFn = setTimeout(() => {
+                dispatch(fetchRecipesByIngredient({ ingredient, searchTerm: search }));
+            }, 500);
+            return () => clearTimeout(delayDebounceFn); 
         }
-    }, [ingredient, dispatch])
+    }, [ingredient, search, dispatch]);
+
+    useEffect(() => {
+        return () => {
+            dispatch(clearRecipes());
+        };
+    }, [dispatch]);
 
     const validation = (val: string) => {
         if(!val.trim()) 
@@ -49,13 +58,13 @@ const RecipeList = () => {
     setInputError(error);
   };
 
-    if (loading) {
-        return (
-            <>
-            <Spinner />
-            </>
-        );
-    }
+    // if (loading && recipes.length === 0) {
+    //     return (
+    //         <>
+    //         <Spinner />
+    //         </>
+    //     );
+    // }
 
     if (error) {
         return (
@@ -92,11 +101,15 @@ const RecipeList = () => {
             /> 
             {inputError && <p>{inputError}</p>}
             </div>
-
-            {recipes.length === 0 ? (
-                <p>
-                    No recipes found
-                </p>
+            
+            {loading ? (
+                <div>
+                    <Spinner/>
+                </div>
+            ) : (
+                <>
+                {recipes.length === 0 ? (
+                   search === '' ? <Spinner/> :<p>No recipes found</p>   
             ) : (
                 <div className='recipe-grid'>
                     {recipes.map(recipe => (
@@ -118,6 +131,10 @@ const RecipeList = () => {
                 </div>
 
             )}
+                </>
+            
+            )}
+            
             
 
            

@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { MealSummary, RecipesResponse } from '../types/meal.types';
+import { MealSummary, RecipesResponse, Category } from '../types/meal.types';
 import { RootState } from "./store";
 
 interface RecipesState {
@@ -22,10 +22,10 @@ const initialState: RecipesState = {
 
 export const fetchRecipesByIngredient = createAsyncThunk(
     'recipes/fetchRecipesByIngredient',
-    async (ingredient: string) => {
+    async ({ ingredient, searchTerm }: { ingredient: string; searchTerm: string }) => {
         const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
         // const response = await axios.get(`${API_BASE_URL}/recipes/?ingredient=${ingredient}`);
-        const response = await fetch(`${API_BASE_URL}/recipes/?ingredient=${ingredient}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/?ingredient=${ingredient}&search=${searchTerm}`);
         const data: RecipesResponse = await response.json();
         return { meals: data.meals, ingredient };
     }
@@ -33,10 +33,10 @@ export const fetchRecipesByIngredient = createAsyncThunk(
 
 export const fetchRecipesByCategory = createAsyncThunk(
     'recipes/fetchByCategory',
-    async (category: string) => {
+    async ({ category, searchTerm }: { category: string; searchTerm: string }) => {
         const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
         // const response = await axios.get(`${API_BASE_URL}/recipes/category/${category}`);
-        const response = await fetch(`${API_BASE_URL}/recipes/category/${category}`);
+        const response = await fetch(`${API_BASE_URL}/recipes/category/${category}/?search=${searchTerm}`);
         const data: RecipesResponse = await response.json();
         return { meals: data.meals, category };
     }
@@ -86,7 +86,7 @@ const recipesSlice = createSlice({
         builder.addCase(fetchRecipesByCategory.pending, (state) =>{
             state.loading = true;
             state.error = null;
-            // state.searchTerm = '';
+            state.searchTerm = '';
         });
 
         // Handle Category Fulfilled state
@@ -115,14 +115,14 @@ export const selectRecipesError = (state: RootState) => state.recipes.error;
 export const selectRecipesSelectedIngredient = (state: RootState) => state.recipes.selectedIngredient;
 export const selectRecipesSelectedCategory = (state: RootState) => state.recipes.selectedCategory;
 
-export const selectFilteredRecipes = (state: RootState) => {
-    const { list, searchTerm } = state.recipes;
-    if (!searchTerm) return list;
-    return list.filter(recipe =>
-    recipe.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+export const selectFilteredRecipes = (state: RootState) => state.recipes.list;
+//     const { list, searchTerm } = state.recipes;
+//     if (!searchTerm) return list;
+//     return list.filter(recipe =>
+//     recipe.strMeal.toLowerCase().includes(searchTerm.toLowerCase())
+//   );
 
-};
+// };
 
 
 export default recipesSlice.reducer;
